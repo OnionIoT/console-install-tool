@@ -8,5 +8,8 @@ If there are any features that should be there (onion.console.[feature]=1) but a
 
 The script also runs at boot, checking for every feature. Particularly, it will also check for post-boot install (onion.console.install=2).
 
+
+
 * This functionality needs to be fixed!
+
 The script will also run when any changes occur to the config file (onion.console.[...]), either through the setup-wizard or directly changing the config file by manually writing to file or using UCI
