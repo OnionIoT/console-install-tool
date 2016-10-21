@@ -83,6 +83,11 @@ Remove_opkg () {
     nothing=$(opkg remove "$package")
 }
 
+Get_console_config () {
+    res=$($UCI show onion.$CONSOLE)
+    echo $res
+}
+
 Manage_inst () {
     package=$1
     check_config=$(Check_setup_inst "$package")
@@ -173,6 +178,27 @@ if [ $bUsage == 1 ]; then
     exit
 fi
 
+#_Print "$(Get_console_line)"
+#console_line=$(Get_console_line)
+#_Print "$(sed "$((console_line))!d" $CONFIG_FILE)"
+#_Print "$(sed "$((console_line+1))!d" $CONFIG_FILE)"
+#_Print "$(sed "$((console_line+2))!d" $CONFIG_FILE)"
+#_Print "$(sed "$((console_line+3))!d" $CONFIG_FILE)"
+#_Print "$(sed "$((console_line+4))!d" $CONFIG_FILE)"
+#_Print "$(sed "$((console_line+5))!d" $CONFIG_FILE)"
+#_Print "$(sed "$((console_line+6))!d" $CONFIG_FILE)"
+
+#_Print ""
+
+config=$(Get_console_config)
+_Print "$config"
+_Print ""
+
+check_wwan=$(Check_wwan)
+if [ "$check_wwan" == "0" ]; then
+    exit
+fi
+
 if [ $bConsoleinstall_2 == 1 ]; then
     install=$(Check_install_uci)
     if [ $install == 2 ]; then
@@ -185,22 +211,6 @@ if [ $bConsoleinstall_2 == 1 ]; then
     else
         _Print "console already installed... check without -console_install flag"
     fi
-    exit
-fi
-
-#_Print "$(Get_console_line)"
-console_line=$(Get_console_line)
-_Print "$(sed "$((console_line))!d" $CONFIG_FILE)"
-_Print "$(sed "$((console_line+1))!d" $CONFIG_FILE)"
-_Print "$(sed "$((console_line+2))!d" $CONFIG_FILE)"
-_Print "$(sed "$((console_line+3))!d" $CONFIG_FILE)"
-_Print "$(sed "$((console_line+4))!d" $CONFIG_FILE)"
-_Print "$(sed "$((console_line+5))!d" $CONFIG_FILE)"
-_Print "$(sed "$((console_line+6))!d" $CONFIG_FILE)"
-
-check_wwan=$(Check_wwan)
-if [ "$check_wwan" == "0" ]; then
-    exit
 fi
 
 _Print ""
