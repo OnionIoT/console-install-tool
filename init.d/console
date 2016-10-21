@@ -3,7 +3,7 @@
 START=80
 
 USE_PROCD=1
-BIN=/root/testlim/console_config.sh
+BIN=/usr/bin/console-install-tool
 
 boot() {
     echo "checking for onion.console.install=2"
