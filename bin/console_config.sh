@@ -13,7 +13,7 @@ UBUS=/bin/ubus
 
 CONFIG_FILE=/etc/config/onion
 
-CONSOLE=test # change to console later
+CONSOLE=console # change to console later
 
 _Print () {
     if [ $bVerbose == 1 ]; then
@@ -107,7 +107,10 @@ Manage_inst () {
                 exit 0
             fi
             # uncomment the line below to actually install package through opkg
-            #nothing=$(Install_opkg "$package")
+            if [ "$1" == "install" ]; then
+                package="onion-console-base"
+            fi
+            nothing=$(Install_opkg "$package")
             _Print "installing $package"
         else
             _Print "current configuration for $package validated"
@@ -127,7 +130,10 @@ Manage_inst () {
                 exit 0
             fi
             # uncomment the line below to actually remove package through opkg
-            #nothing=$(Remove_opkg "$package")
+            if [ "$1" == "install" ]; then
+                package="onion-console-base"
+            fi
+            nothing=$(Remove_opkg "$package")
             _Print "removing $package"
         else
             _Print "current configuration for $package validated"
@@ -204,7 +210,8 @@ if [ $bConsoleinstall_2 == 1 ]; then
     if [ $install == 2 ]; then
         _Print "Installing onion-console-base"
     # uncomment the line below to actually install the console for install=2 option
-    #    nothing=$(Install_opkg onion-console-base)
+        $(opkg update)
+        nothing=$(Install_opkg onion-console-base)
         nothing=$($UCI set onion.$CONSOLE.install=1)
         nothing=$($UCI commit)
         _Print "UCI committed"
@@ -213,8 +220,8 @@ if [ $bConsoleinstall_2 == 1 ]; then
     fi
 fi
 
-_Print ""
-Manage_inst "setup"
+# _Print ""
+# Manage_inst "setup"
 
 _Print ""
 Manage_inst "install"
