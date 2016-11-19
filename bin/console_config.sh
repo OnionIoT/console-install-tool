@@ -113,6 +113,10 @@ Manage_inst () {
             fi
             nothing=$(Install_opkg "$package")
             _Print "installing $package"
+            # restart rpcd to complete console base installation
+            if [ "$1" == "install" ]; then
+                $(/etc/init.d/rpcd restart)
+            fi
         else
             _Print "current configuration for $package validated"
         fi
@@ -218,6 +222,8 @@ if [ $bConsoleinstall_2 == 1 ]; then
         
         nothing=$($UCI commit)
         _Print "UCI committed"
+        # restart rpcd to complete console installation
+        $(/etc/init.d/rpcd restart)
     else
         _Print "console already installed... check without -console_install flag"
     fi
