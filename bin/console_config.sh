@@ -74,12 +74,12 @@ Check_opkg_inst () {
 }
 
 Install_opkg () {
-    package=$1
+    package="onion-console-$1"
     nothing=$(opkg install "$package")
 }
 
 Remove_opkg () {
-    package=$1
+    package="onion-console-$1"
     nothing=$(opkg remove "$package")
 }
 
@@ -90,6 +90,7 @@ Get_console_config () {
 
 Manage_inst () {
     package=$1
+    touch /tmp/started_manage
     check_config=$(Check_setup_inst "$package")
     check_opkg=$(Check_opkg_inst "$package")
     _Print "check_config = $check_config, check_opkg = $check_opkg"
@@ -108,7 +109,7 @@ Manage_inst () {
             fi
             # uncomment the line below to actually install package through opkg
             if [ "$1" == "install" ]; then
-                package="onion-console-base"
+                package="base"
             fi
             nothing=$(Install_opkg "$package")
             _Print "installing $package"
@@ -131,7 +132,7 @@ Manage_inst () {
             fi
             # uncomment the line below to actually remove package through opkg
             if [ "$1" == "install" ]; then
-                package="onion-console-base"
+                package="base"
             fi
             nothing=$(Remove_opkg "$package")
             _Print "removing $package"
@@ -211,8 +212,10 @@ if [ $bConsoleinstall_2 == 1 ]; then
         _Print "Installing onion-console-base"
     # uncomment the line below to actually install the console for install=2 option
         $(opkg update)
-        nothing=$(Install_opkg onion-console-base)
+        sleep 30
+        nothing=$(Install_opkg base)
         nothing=$($UCI set onion.$CONSOLE.install=1)
+        
         nothing=$($UCI commit)
         _Print "UCI committed"
     else

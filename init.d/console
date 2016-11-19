@@ -20,8 +20,8 @@ start_service() {
 
 service_triggers() {
     procd_add_reload_trigger onion
-    echo "service_triggers for onion.test"
-   # $BIN -v
+    echo "service_triggers for onion.console"
+    $BIN -v
 }
 
 
