@@ -24,6 +24,9 @@ service_triggers() {
     $BIN -v
 }
 
+start(){
+    start_service()
+}
 
 
 reload_service() {
