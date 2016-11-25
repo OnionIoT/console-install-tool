@@ -23,10 +23,6 @@ service_triggers() {
     $BIN -v
 }
 
-start(){
-    start_service()
-}
-
 reload_service() {
     echo "Explicitly restarting service"
     echo "calling console_config"
