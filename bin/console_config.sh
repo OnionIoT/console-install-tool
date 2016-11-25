@@ -30,15 +30,22 @@ _Usage () {
 }
 
 Check_wwan () {
-    res=$($UBUS call network.interface.wwan status | grep up | grep true)
-    _Print "Checking wwan connection..."
-    if [ "$res" == "" ]; then
-        _Print "No wwan connection... abort"
-        echo 0
-    else
-        _Print "wwan connection up"
-        echo 1
-    fi
+    waitcount=0
+    waitflag=0
+
+    while [ "$waitcount" -le 12 ] &&
+        [ "$waitflag" == 0 ]; do
+        local res=$($UBUS call network.interface.wwan status | grep up | grep true)
+        if [ "$res" == "" ];
+        then
+            sleep 5
+            waitcount=$(($waitcount + 1))
+        else
+            _Print "radio0 is up"
+            waitflag=1
+        fi
+    done
+    echo $waitflag
 }
 
 
@@ -98,15 +105,15 @@ Manage_inst () {
         if [ "$check_opkg" == "0" ]; then
             if [ $bUpdated == 0 ]; then
                 _Print "updating opkg"
-                update_check=$(opkg update | grep failed)
+                $(opkg update &> /dev/null)
                 bUpdated=1
             else
                 _Print "opkg updated... proceeding to installation"
             fi
-            if [ "$update_check" != "" ]; then
-                _Print "opkg update unsuccessful... aborting"
-                exit 0
-            fi
+            # if [ "$update_check" != "" ]; then
+            #     _Print "opkg update unsuccessful... aborting"
+            #     exit 0
+            # fi
             # uncomment the line below to actually install package through opkg
             if [ "$1" == "install" ]; then
                 package="base"
@@ -121,15 +128,15 @@ Manage_inst () {
         if [ "$check_opkg" == "1" ]; then
             if [ $bUpdated == 0 ]; then
                 _Print "updating opkg"
-                update_check=$(opkg update | grep failed)
+                $(opkg update &> /dev/null)
                 bUpdated=1
             else
                 _Print "opkg updated... proceeding to installation"
             fi
-            if [ "$update_check" != "" ]; then
-                _Print "opkg update unsuccessful... aborting"
-                exit 0
-            fi
+            # if [ "$update_check" != "" ]; then
+            #     _Print "opkg update unsuccessful... aborting"
+            #     exit 0
+            # fi
             # uncomment the line below to actually remove package through opkg
             if [ "$1" == "install" ]; then
                 package="base"
@@ -211,8 +218,7 @@ if [ $bConsoleinstall_2 == 1 ]; then
     if [ $install == 2 ]; then
         _Print "Installing onion-console-base"
     # uncomment the line below to actually install the console for install=2 option
-        $(opkg update)
-        sleep 30
+        nothing=$(opkg update &> /dev/null)
         nothing=$(Install_opkg base)
         nothing=$($UCI set onion.$CONSOLE.install=1)
         

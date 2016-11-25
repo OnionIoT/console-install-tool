@@ -6,7 +6,6 @@ USE_PROCD=1
 BIN=/usr/bin/console-install-tool
 
 boot() {
-    echo "checking for onion.console.install=2"
     $BIN -console_install
 }
 
@@ -23,8 +22,6 @@ service_triggers() {
     echo "service_triggers for onion.console"
     $BIN -v
 }
-
-
 
 reload_service() {
     echo "Explicitly restarting service"
