@@ -83,6 +83,7 @@ Check_opkg_inst () {
 Install_opkg () {
     package="onion-console-$1"
     nothing=$(opkg install "$package")
+    echo $nothing
 }
 
 Remove_opkg () {
@@ -120,6 +121,16 @@ Manage_inst () {
             fi
             nothing=$(Install_opkg "$package")
             _Print "installing $package"
+            # restart rpcd to complete console base installation
+            if [ "$1" == "install" ]; then
+                # Check if the console is already installed
+                _Print "$nothing"
+                if [ "$nothing" == "Package onion-console-base (0.2-1) installed in root is up to date." ]; then
+                    _Print "$nothing"
+                else
+                    $(/etc/init.d/rpcd restart)
+                fi
+            fi
         else
             _Print "current configuration for $package validated"
         fi
@@ -224,6 +235,8 @@ if [ $bConsoleinstall_2 == 1 ]; then
         
         nothing=$($UCI commit)
         _Print "UCI committed"
+        # restart rpcd to complete console installation
+        $(/etc/init.d/rpcd restart)
     else
         _Print "console already installed... check without -console_install flag"
     fi
