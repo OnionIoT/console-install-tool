@@ -35,8 +35,10 @@ Check_wwan () {
 
     while [ "$waitcount" -le 12 ] &&
         [ "$waitflag" == 0 ]; do
-        local res=$($UBUS call network.interface.wwan status | grep up | grep true)
-        if [ "$res" == "" ];
+        local resWifi=$($UBUS call network.interface.wwan status | grep up | grep true)
+        local resEth=$($UBUS call network.interface.wan status | grep up | grep true)
+        if [ "$resWifi" == "" ] &&  [ "$resEth" == "" ];
+
         then
             sleep 5
             waitcount=$(($waitcount + 1))
