@@ -119,10 +119,14 @@ Manage_inst () {
             # fi
             # uncomment the line below to actually install package through opkg
             if [ "$1" == "install" ]; then
-                package="base"
+                #package="base"
+                # lazar@onion.io: highjacking this to install Onion-OS
+                nothing=$(opkg install onion-os)
+            else
+                nothing=$(Install_opkg "$package")
             fi
-            nothing=$(Install_opkg "$package")
             _Print "installing $package"
+
             # restart rpcd to complete console base installation
             if [ "$1" == "install" ]; then
                 # Check if the console is already installed
@@ -234,7 +238,7 @@ if [ $bConsoleinstall_2 == 1 ]; then
         nothing=$(opkg update &> /dev/null)
         nothing=$(Install_opkg base)
         nothing=$($UCI set onion.$CONSOLE.install=1)
-        
+
         nothing=$($UCI commit)
         _Print "UCI committed"
         # restart rpcd to complete console installation
