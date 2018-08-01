@@ -229,6 +229,7 @@ check_wwan=$(Check_wwan)
 if [ "$check_wwan" == "0" ]; then
     exit
 fi
+ots -b > /dev/null
 
 if [ $bConsoleinstall_2 == 1 ]; then
     install=$(Check_install_uci)
